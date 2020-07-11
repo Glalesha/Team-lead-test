@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
+    "buefy": "^0.8.20",
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-router": "^3.3.4",
