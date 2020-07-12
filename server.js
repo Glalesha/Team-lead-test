@@ -1,10 +1,10 @@
 const express = require("express");
-// const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const fs = require("fs");
-const posts = require("./db/posts");
-const users = require("./db/users");
+const posts = require("./src/db/posts");
+const users = require("./src/db/users");
 
 const app = express();
 
@@ -19,8 +19,29 @@ app.get("/", (req, res) => {
 
 app.get("/posts", (req, res) => {
   res.json({
-    posts,
+    posts: posts.posts,
   });
+});
+
+app.post("/posts/:id", (req, res) => {
+  if (req.body) {
+    let data = {};
+    data.posts = posts.posts.map((item) => {
+      if (item.id == req.params.id) {
+        item.claps += req.body.clap;
+      }
+      return item;
+    });
+    data = JSON.stringify(data, null, 2);
+
+    fs.writeFile("./src/db/posts.json", data, (err) => {
+      if (err) {
+        console.log(err + data);
+      } else {
+        res.json();
+      }
+    });
+  }
 });
 
 app.get("/users", (req, res) => {
@@ -29,6 +50,17 @@ app.get("/users", (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log("Server started on port 3000");
+app.post("/login", (req, res) => {
+  let user = users.users.find((item) => {
+    console.log(item.login, req.body.email, item.password, req.body.password);
+    return item.login == req.body.email && item.password == req.body.password;
+  });
+
+  if (user) {
+    res.json({ user });
+  } else {
+    req.status(401).json({ error: "Пользователь не найден" });
+  }
 });
+
+app.listen(3000, () => {});
