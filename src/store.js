@@ -7,11 +7,14 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     posts: [],
+    user: {
+      role: "notAuthorized",
+    },
   },
 
   getters: {
-    getPost(state, id) {
-      return state.posts.findIndex((item) => {
+    getPost: (state) => (id) => {
+      return state.posts.find((item) => {
         return item.id === id;
       });
     },
@@ -30,6 +33,19 @@ export default new Vuex.Store({
         return item;
       });
     },
+
+    SET_USER_DATA(state, userData) {
+      state.user = userData;
+      localStorage.setItem("user", JSON.stringify(userData));
+      axios.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${userData.token}`;
+    },
+
+    CLEAR_USER_DATA() {
+      localStorage.removeItem("user");
+      location.reload();
+    },
   },
 
   actions: {
@@ -39,33 +55,47 @@ export default new Vuex.Store({
       });
     },
 
-    changeClaps({ commit }, { clap, id }) {
-      if (clap) {
-        clap = 1;
-      } else {
-        clap = -1;
-      }
+    changeClaps({ commit, state }, { clap, id }) {
+      if (state.user.role === "reader") {
+        if (clap) {
+          clap = 1;
+        } else {
+          clap = -1;
+        }
 
-      axios
-        .post(`http://localhost:3000/posts/${id}`, { clap })
-        .then(() => {
-          commit("CHANGE_CLAPS", { id, clap });
+        axios
+          .post(`http://localhost:3000/posts/${id}`, { clap })
+          .then(() => {
+            commit("CHANGE_CLAPS", { id, clap });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        console.log("you can't do it action");
+      }
+    },
+
+    login({ commit }, { email, password }) {
+      return axios
+        .post("http://localhost:3000/login", { email, password })
+        .then(({ data }) => {
+          commit("SET_USER_DATA", data);
         })
         .catch((err) => {
           console.log(err);
         });
     },
 
-    login({ commit }, { email, password }) {
-      axios
-        .post("http://localhost:3000/login", { email, password })
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      commit;
+    logout({ commit }) {
+      commit("CLEAR_USER_DATA");
+    },
+
+    deletePost({ commit }, id) {
+      axios.delete(`http://localhost:3000/posts/${id}`).then((res) => {
+        console.log(res.data.posts);
+        commit("SET_POSTS", res.data.posts);
+      });
     },
   },
 });

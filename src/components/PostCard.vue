@@ -19,9 +19,20 @@
           >
         </div>
         <div class="level-right">
+          <template v-if="userRole === 'writer'">
+            <b-button
+              tag="router-link"
+              :to="{ name: 'editPost', params: { id: post.id } }"
+              >Редактировать</b-button
+            >
+            <b-button @click="deletePost">Удалить</b-button>
+          </template>
+
           <b-button
+            :disabled="userRole !== 'reader'"
             class="level-item"
-            :type="{ 'is-success': clap }"
+            rounded
+            :type="{ 'is-success': clap, disabled: userRole !== 'reader' }"
             @click="changeClap"
             ><img class="clapIcon" src="../assets/img/clap-icon.svg"
           /></b-button>
@@ -33,6 +44,8 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
@@ -53,6 +66,10 @@ export default {
       let daysAgo = Math.ceil((Date.now() - postDate) / (60 * 60 * 24 * 1000));
       return daysAgo;
     },
+
+    ...mapState({
+      userRole: (state) => state.user.role,
+    }),
   },
 
   methods: {
@@ -64,6 +81,10 @@ export default {
         id: this.post.id,
       });
     },
+
+    deletePost() {
+        this.$store.dispatch('deletePost', this.post.id)
+    }
   },
 };
 </script>

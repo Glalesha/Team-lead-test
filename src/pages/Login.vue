@@ -18,8 +18,12 @@
         ></b-input>
       </b-field>
 
-      <b-field label="Пароль" :type="{ 'is-danger': $v.email.$error }">
-        <b-input v-model="password" type="password"></b-input>
+      <b-field label="Пароль" :type="{ 'is-danger': $v.password.$error }">
+        <b-input
+          @blur="$v.password.$touch()"
+          v-model="password"
+          type="password"
+        ></b-input>
       </b-field>
 
       <p class="control">
@@ -36,7 +40,7 @@
 </template>
 
 <script>
-import { required, email  } from "vuelidate/lib/validators";
+import { required, email } from "vuelidate/lib/validators";
 
 export default {
   data() {
@@ -61,13 +65,17 @@ export default {
     login() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
-        this.$store.dispatch("login", {
-          email: this.email,
-          password: this.password,
-        });
+        this.$store
+          .dispatch("login", {
+            email: this.email,
+            password: this.password,
+          })
+          .then(() => {
+            this.email = "";
+            this.password = "";
 
-        this.email = "";
-        this.password = "";
+            this.$router.push({ name: "home" });
+          });
       }
     },
   },
