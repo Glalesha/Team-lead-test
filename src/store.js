@@ -46,6 +46,10 @@ export default new Vuex.Store({
       localStorage.removeItem("user");
       location.reload();
     },
+
+    UPDATE_POST(state, newPosts) {
+      state.posts = newPosts;
+    },
   },
 
   actions: {
@@ -96,6 +100,14 @@ export default new Vuex.Store({
         console.log(res.data.posts);
         commit("SET_POSTS", res.data.posts);
       });
+    },
+
+    updatePost({ commit }, { newPost, id }) {
+      return axios
+        .put(`http://localhost:3000/posts/${id}`,  newPost )
+        .then((res) => {
+          commit("UPDATE_POST", res.data.posts);
+        });
     },
   },
 });

@@ -2,8 +2,6 @@
   "posts": [
     {
       "id": 1,
-      "title": "Название поста",
-      "description": "Текст",
       "claps": 48,
       "createdAt": "2019-09-29T00:00:00.000Z",
       "updateAt": "2019-09-29T00:00:00.000Z",
@@ -11,8 +9,8 @@
     },
     {
       "id": 2,
-      "title": "Название поста",
-      "description": "Текст",
+      "title": "fdsfsd",
+      "description": "fdssdfsfd",
       "claps": 48,
       "createdAt": "2019-09-29T00:00:00.000Z",
       "updateAt": "2019-09-29T00:00:00.000Z",

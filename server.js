@@ -68,6 +68,28 @@ app.delete("/posts/:id", (req, res) => {
   });
 });
 
+app.put("/posts/:id", (req, res) => {
+  console.log(req.body);
+  const data = { posts: [] };
+  data.posts = posts.posts.map((item) => {
+    if (item.id == req.params.id) {
+      item.title = req.body.title;
+      item.description = req.body.description;
+    }
+
+    return item;
+  });
+  console.log(req.params.id, data);
+
+  fs.writeFile("./src/db/posts.json", JSON.stringify(data, null, 2), (err) => {
+    if (err) {
+      console.log(err + data);
+    } else {
+      res.json({ posts: posts.posts });
+    }
+  });
+});
+
 app.get("/users", (req, res) => {
   res.json({
     users,

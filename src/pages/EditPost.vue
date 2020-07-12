@@ -4,7 +4,7 @@
       <b-input
         type="text"
         class="card-header-title"
-        :value="post.title"
+        v-model="newPost.title"
       ></b-input>
     </header>
 
@@ -13,7 +13,7 @@
         <b-input
           type="text"
           class="card-header-title"
-          :value="post.desctiption"
+          v-model="newPost.description"
         ></b-input>
       </div>
     </div>
@@ -21,20 +21,10 @@
     <footer class="card-footer">
       <div class="level card-footer-item">
         <div class="level-right">
-          <b-button
-            class="level-item"
-            rounded
-            :type="{ 'is-success': clap, disabled: userRole !== 'reader' }"
-            @click="save"
+          <b-button class="level-item" rounded @click="save"
             >Сохранить</b-button
           >
-          <b-button
-            class="level-item"
-            rounded
-            :type="{ 'is-success': clap, disabled: userRole !== 'reader' }"
-            @click="cancel"
-            >Отмена</b-button
-          >
+          <b-button class="level-item" rounded @click="cancel">Отмена</b-button>
         </div>
       </div>
     </footer>
@@ -45,6 +35,15 @@
 export default {
   props: ["id"],
 
+  data() {
+    return {
+      newPost: {
+        title: this.post && this.post.title,
+        description: this.post && this.post.description,
+      },
+    };
+  },
+
   computed: {
     post() {
       return this.$store.getters.getPost(this.id);
@@ -53,9 +52,18 @@ export default {
 
   methods: {
     cancel() {
-      this.$router.push({name: 'posts'})
-    }
-  }
+      this.$router.push({ name: "posts" });
+    },
+
+    save() {
+      this.$store
+        .dispatch("updatePost", {
+          newPost: this.newPost,
+          id: this.id,
+        })
+        .then(this.$router.push({ name: "posts" }));
+    },
+  },
 };
 </script>
 
