@@ -2,14 +2,14 @@
   "posts": [
     {
       "id": 1,
-      "claps": 48,
+      "claps": 49,
       "createdAt": "2019-09-29T00:00:00.000Z",
       "updateAt": "2019-09-29T00:00:00.000Z",
       "userId": 1
     },
     {
       "id": 2,
-      "title": "fdsfsd",
+      "title": "",
       "description": "fdssdfsfd",
       "claps": 48,
       "createdAt": "2019-09-29T00:00:00.000Z",
@@ -18,8 +18,8 @@
     },
     {
       "id": 3,
-      "title": "Название поста",
-      "description": "Текст",
+      "title": "2112",
+      "description": "211221",
       "claps": 48,
       "createdAt": "2019-09-29T00:00:00.000Z",
       "updateAt": "2019-09-29T00:00:00.000Z",

@@ -6,7 +6,7 @@
 
     <div class="card-content">
       <div class="content">
-        {{ post.description }}
+        <p class="">{{ post.description }}</p>
       </div>
     </div>
 
@@ -21,21 +21,24 @@
         <div class="level-right">
           <template v-if="userRole === 'writer'">
             <b-button
+              class="level-item"
               tag="router-link"
               :to="{ name: 'editPost', params: { id: post.id } }"
               >Редактировать</b-button
             >
-            <b-button @click="deletePost">Удалить</b-button>
+            <b-button @click="deletePost" class="level-item" type="is-danger"
+              >Удалить</b-button
+            >
           </template>
 
           <b-button
             :disabled="userRole !== 'reader'"
             class="level-item"
-            rounded
             :type="{ 'is-success': clap, disabled: userRole !== 'reader' }"
             @click="changeClap"
-            ><img class="clapIcon" src="../assets/img/clap-icon.svg"
-          /></b-button>
+            icon-left="sign-language"
+            rounded
+          ></b-button>
           <span>{{ post.claps }}</span>
         </div>
       </div>
@@ -83,8 +86,8 @@ export default {
     },
 
     deletePost() {
-        this.$store.dispatch('deletePost', this.post.id)
-    }
+      this.$store.dispatch("deletePost", this.post.id);
+    },
   },
 };
 </script>

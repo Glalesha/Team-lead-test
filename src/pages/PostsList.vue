@@ -1,7 +1,9 @@
 <template>
   <div class="box">
-    <ul class="items">
-      <li class="item" v-for="post in posts" :key="post.id"><PostCard :post="post" /></li>
+    <ul class="post-list">
+      <li class="post-item" v-for="post in posts" :key="post.id">
+        <PostCard :post="post" />
+      </li>
     </ul>
   </div>
 </template>
@@ -25,4 +27,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped lang="scss">
+.post-item:not(:last-child) {
+  margin-bottom: 50px;
+}
+</style>

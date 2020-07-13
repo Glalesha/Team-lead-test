@@ -1,6 +1,6 @@
 <template>
-  <section class="section">
-    <form @submit.prevent="login">
+  <div class="container is-mobile is-two-fifths login-form-container">
+    <form @submit.prevent="login" class="login-form">
       <b-field
         label="Логин"
         :type="{ 'is-danger': $v.email.$error }"
@@ -18,7 +18,16 @@
         ></b-input>
       </b-field>
 
-      <b-field label="Пароль" :type="{ 'is-danger': $v.password.$error }">
+      <b-field
+        label="Пароль"
+        :type="{ 'is-danger': $v.password.$error }"
+        :message="[
+          {
+            'Пароль должен быть не меньше 6 символов':
+              !$v.password.minLenght && $v.password.$error,
+          },
+        ]"
+      >
         <b-input
           @blur="$v.password.$touch()"
           v-model="password"
@@ -27,26 +36,40 @@
       </b-field>
 
       <p class="control">
-        <button :disabled="$v.$invalid" type="submit" class="button is-primary">
+        <b-button
+          :disabled="$v.$invalid"
+          tag="input"
+          native-type="submit"
+          class="button is-primary"
+        >
           Войти
-        </button>
+        </b-button>
       </p>
 
-      <p v-if="$v.$invalid">
+      <p v-if="$v.$anyError" class="has-text-danger">
         Пожалуйста, заполните все необходимые поля
       </p>
     </form>
-  </section>
+
+    <b-notification
+      :active.sync="showErrorNotification"
+      class="notifation is-danger"
+    >
+      Логин или пароль введены не верно
+    </b-notification>
+  </div>
 </template>
 
 <script>
-import { required, email } from "vuelidate/lib/validators";
+import { mapState } from "vuex";
+import { required, email, minLength } from "vuelidate/lib/validators";
 
 export default {
   data() {
     return {
       email: "",
       password: "",
+      showErrorNotification: false,
     };
   },
 
@@ -57,8 +80,15 @@ export default {
     },
 
     password: {
+      mingLength: minLength(6),
       required,
     },
+  },
+
+  computed: {
+    ...mapState({
+      userRole: (state) => state.user.role,
+    }),
   },
 
   methods: {
@@ -74,7 +104,12 @@ export default {
             this.email = "";
             this.password = "";
 
-            this.$router.push({ name: "home" });
+            if (this.userRole !== "notAuthorized") {
+              this.$router.push({ name: "home" });
+            } else {
+              this.$v.$reset();
+              this.showErrorNotification = true;
+            }
           });
       }
     },
@@ -82,4 +117,16 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped lang="scss">
+.login-form-container {
+  margin-top: 200px;
+}
+
+.login-form {
+  margin-bottom: 50px;
+}
+
+.is-two-fifths {
+  max-width: 540px;
+}
+</style>

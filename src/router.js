@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Posts from "./pages/Posts";
+import PostsList from "./pages/PostsList";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import EditPost from "./pages/EditPost";
@@ -14,7 +14,7 @@ const router = new Router({
     {
       path: "/posts",
       name: "posts",
-      component: Posts,
+      component: PostsList,
     },
     {
       path: "/login",
