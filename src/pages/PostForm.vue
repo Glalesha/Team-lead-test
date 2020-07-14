@@ -1,30 +1,19 @@
 <template>
-  <div class="box">
+  <div class="container">
     <div class="card">
-      <header class="card-header">
+      <div class="card-content">
         <b-field
           :type="{ 'is-danger': $v.title.$error }"
           :message="[{ 'У поста должно быть название': $v.title.$error }]"
-          ><b-input
-            type="text"
-            class="card-header-title"
-            v-model="title"
-          ></b-input
+          ><b-input type="text" v-model="title"></b-input
         ></b-field>
-      </header>
-
-      <div class="card-content">
         <div class="content">
           <b-field
             :type="{ 'is-danger': $v.description.$error }"
             :message="[
               { 'У поста должно быть описание': $v.description.$error },
             ]"
-            ><b-input
-              type="textarea"
-              class="card-header-title"
-              v-model="description"
-            ></b-input
+            ><b-input type="textarea" v-model="description"></b-input
           ></b-field>
         </div>
       </div>
@@ -58,8 +47,8 @@ export default {
 
   data() {
     return {
-      title: this.$store.getters.getPost(this.id).title,
-      description: this.$store.getters.getPost(this.id).description,
+      title: this.id && this.$store.getters.getPost(this.id).title,
+      description: this.id && this.$store.getters.getPost(this.id).description,
     };
   },
 
@@ -89,12 +78,32 @@ export default {
       this.$v.description.$touch();
 
       if (this.$v.$error) return;
-      this.$store
-        .dispatch("updatePost", {
-          newPost: { title: this.title, description: this.description },
-          id: this.id,
-        })
-        .then(this.$router.push({ name: "posts" }));
+      if (this.id) {
+        this.$store
+          .dispatch("updatePost", {
+            newPost: {
+              title: this.title,
+              description: this.description,
+              updateAt: new Date(),
+            },
+            id: this.id,
+          })
+          .then(this.$router.push({ name: "posts" }));
+      } else {
+        this.$store
+          .dispatch("updatePost", {
+            newPost: {
+              title: this.title,
+              description: this.description,
+              createdAt: new Date(),
+              updateAt: new Date(),
+              claps: 0,
+              userId: 1,
+            },
+            id: Math.ceil(Math.random() * 10000000),
+          })
+          .then(this.$router.push({ name: "posts" }));
+      }
     },
   },
 };

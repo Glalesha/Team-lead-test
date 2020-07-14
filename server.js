@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const fs = require("fs");
-const posts = require("./src/db/posts");
 const users = require("./src/db/users");
 
 const app = express();
@@ -18,8 +17,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/posts", (req, res) => {
-  res.json({
-    posts: posts.posts,
+  fs.readFile("./src/db/posts.json", "UTF-8", (err, postsDB) => {
+    const posts = JSON.parse(postsDB);
+    res.json({
+      posts: posts.posts,
+    });
   });
 });
 
@@ -29,10 +31,29 @@ app.post("/posts/:id", verifyToken, (req, res) => {
       res.sendStatus(401);
     } else {
       if (req.body) {
-        let data = {};
+        let postsDB = fs.readFileSync("./src/db/posts.json");
+        const posts = JSON.parse(postsDB);
+        let data = { posts: [] };
         data.posts = posts.posts.map((item) => {
           if (item.id == req.params.id) {
             item.claps += req.body.clap;
+
+            if (!item.usersClapped) {
+              item.usersClapped = [];
+            }
+
+            const userClapped = item.usersClapped.find((item) => {
+              return item === req.body.uesrLogin;
+            });
+
+            console.log(req.body);
+            if (userClapped) {
+              item.usersClapped.filter((item) => {
+                return item !== req.body.userLogin;
+              });
+            } else {
+              item.usersClapped = [...item.usersClapped, req.body.userLogin];
+            }
           }
           return item;
         });
@@ -50,42 +71,81 @@ app.post("/posts/:id", verifyToken, (req, res) => {
   });
 });
 
-app.delete("/posts/:id", (req, res) => {
-  const data = { posts: [] };
-  data.posts = posts.posts.filter((item) => {
-    console.log(item.id, req.params.id);
-    return item.id != req.params.id;
-  });
-
-  console.log(data);
-
-  fs.writeFile("./src/db/posts.json", JSON.stringify(data, null, 2), (err) => {
+app.delete("/posts/:id", verifyToken, (req, res) => {
+  jwt.verify(req.token, "the_secret_key", (err) => {
     if (err) {
-      console.log(err + data);
+      res.sendStatus(401);
     } else {
-      res.json({ posts: posts.posts });
+      let postsDB = fs.readFileSync("./src/db/posts.json");
+      const posts = JSON.parse(postsDB);
+      const data = { posts: [] };
+      data.posts = posts.posts.filter((item) => {
+        return item.id != req.params.id;
+      });
+
+      fs.writeFile(
+        "./src/db/posts.json",
+        JSON.stringify(data, null, 2),
+        (err) => {
+          if (err) {
+            console.log(err + data);
+          } else {
+            res.json({ posts: data.posts });
+          }
+        }
+      );
     }
   });
 });
 
 app.put("/posts/:id", (req, res) => {
-  console.log(req.body);
-  const data = { posts: [] };
-  data.posts = posts.posts.map((item) => {
-    if (item.id == req.params.id) {
-      item.title = req.body.title;
-      item.description = req.body.description;
-    }
-
-    return item;
-  });
-  console.log(req.params.id, data);
-
-  fs.writeFile("./src/db/posts.json", JSON.stringify(data, null, 2), (err) => {
+  jwt.verify(req.token, "the_secret_key", (err) => {
     if (err) {
-      console.log(err + data);
+      res.sendStatus(401);
     } else {
-      res.json({ posts: posts.posts });
+      fs.readFile("./src/db/posts.json", "UTF-8", (err, postsDB) => {
+        const posts = JSON.parse(postsDB);
+        const data = { posts: [] };
+        let postFound = posts.posts.find((item) => {
+          return item.id === req.params.id;
+        });
+
+        if (postFound) {
+          data.posts = posts.posts.map((item) => {
+            if (item.id == req.params.id) {
+              item.title = req.body.title;
+              item.description = req.body.description;
+              item.updateAt = req.body.updateAt;
+            }
+
+            return item;
+          });
+        } else {
+          data.posts = [
+            ...posts.posts,
+            {
+              title: req.body.title,
+              description: req.body.description,
+              id: req.params.id,
+              createdAt: req.body.createdAt,
+              updateAt: req.body.updateAt,
+              claps: req.body.claps,
+            },
+          ];
+        }
+
+        fs.writeFile(
+          "./src/db/posts.json",
+          JSON.stringify(data, null, 2),
+          (err) => {
+            if (err) {
+              console.log(err + data);
+            } else {
+              res.json({ posts: data.posts });
+            }
+          }
+        );
+      });
     }
   });
 });
@@ -97,16 +157,17 @@ app.get("/users", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
+  console.log(req.body.login);
   const userFound = users.users.find((item) => {
-    return item.login == req.body.email && item.password == req.body.password;
+    return item.login == req.body.login && item.password == req.body.password;
   });
 
   if (userFound) {
-    const userInfo = { email: userFound.login, role: userFound.role };
+    const userInfo = { login: userFound.login, role: userFound.role };
     const token = jwt.sign({ userInfo }, "the_secret_key");
     res.json({
       token,
-      email: userInfo.email,
+      login: userInfo.login,
       role: userInfo.role,
     });
   } else {

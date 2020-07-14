@@ -14,8 +14,8 @@
       <div class="level card-footer-item">
         <div class="level-left">
           <time class="level-item"
-            >{{ postCreatedAgo }}
-            {{ postCreatedAgo | plural(["день", "дней", "дней"]) }} назад</time
+            >Последнее изменение {{ postUpdatedAgo }}
+            {{ postUpdatedAgo | plural(["день", "дней", "дней"]) }} назад</time
           >
         </div>
         <div class="level-right">
@@ -24,9 +24,14 @@
               class="level-item"
               tag="router-link"
               :to="{ name: 'editPost', params: { id: post.id } }"
+              icon-right="edit"
               >Редактировать</b-button
             >
-            <b-button @click="deletePost" class="level-item" type="is-danger"
+            <b-button
+              @click="deletePost"
+              class="level-item"
+              type="is-danger"
+              icon-right="trash"
               >Удалить</b-button
             >
           </template>
@@ -64,15 +69,28 @@ export default {
   },
 
   computed: {
-    postCreatedAgo() {
-      let postDate = new Date(this.post.createdAt);
-      let daysAgo = Math.ceil((Date.now() - postDate) / (60 * 60 * 24 * 1000));
+    postUpdatedAgo() {
+      let updateDate = new Date(this.post.updateAt);
+      let daysAgo = Math.ceil(
+        (Date.now() - updateDate) / (60 * 60 * 24 * 1000)
+      );
       return daysAgo;
     },
 
     ...mapState({
       userRole: (state) => state.user.role,
+      userLogin: (state) => state.user.login,
     }),
+  },
+
+  created() {
+    const userClapped = this.post.usersClapped.find((item) => {
+      return item === this.userLogin;
+    });
+
+    if (userClapped) {
+      this.clap = true;
+    }
   },
 
   methods: {

@@ -3,7 +3,7 @@ import Router from "vue-router";
 import PostsList from "./pages/PostsList";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-import EditPost from "./pages/EditPost";
+import PostForm from "./pages/PostForm";
 
 Vue.use(Router);
 
@@ -27,18 +27,27 @@ const router = new Router({
       component: Home,
     },
     {
-      path: "edit-post",
+      path: "/create-post",
+      name: "createPost",
+      component: PostForm,
+      meta: { requiresRole: "writer" },
+    },
+    {
+      path: "/edit-post/:id",
       name: "editPost",
-      component: EditPost,
+      component: PostForm,
       props: true,
+      meta: { requiresRole: "writer" },
     },
   ],
 });
 
 router.beforeEach((to, from, next) => {
-  const loggedIn = localStorage.getItem("user");
+  const isWriter =
+    localStorage.getItem("user") &&
+    JSON.parse(localStorage.getItem("user")).role === "writer";
 
-  if (to.matched.some((record) => record.meta.requiresAuth) && !loggedIn) {
+  if (to.matched.some((record) => record.meta.requiresRole) && !isWriter) {
     next("/");
   } else {
     next();

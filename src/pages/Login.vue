@@ -1,19 +1,19 @@
 <template>
   <div class="container is-mobile is-two-fifths login-form-container">
-    <form @submit.prevent="login" class="login-form">
+    <form @submit.prevent="performLogin" class="login-form">
       <b-field
         label="Логин"
-        :type="{ 'is-danger': $v.email.$error }"
+        :type="{ 'is-danger': $v.login.$error }"
         :message="[
           {
-            'Некорректный логин': !$v.email.email && $v.email.$error,
+            'Некорректный логин': !$v.login.email && $v.login.$error,
           },
-          { 'Требуется ввести логин': !$v.email.required && $v.email.$error },
+          { 'Требуется ввести логин': !$v.login.required && $v.login.$error },
         ]"
       >
         <b-input
-          @blur="$v.email.$touch()"
-          v-model="email"
+          @blur="$v.login.$touch()"
+          v-model="login"
           type="email"
         ></b-input>
       </b-field>
@@ -67,14 +67,14 @@ import { required, email, minLength } from "vuelidate/lib/validators";
 export default {
   data() {
     return {
-      email: "",
+      login: "",
       password: "",
       showErrorNotification: false,
     };
   },
 
   validations: {
-    email: {
+    login: {
       email,
       required,
     },
@@ -92,16 +92,16 @@ export default {
   },
 
   methods: {
-    login() {
+    performLogin() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         this.$store
           .dispatch("login", {
-            email: this.email,
+            login: this.login,
             password: this.password,
           })
           .then(() => {
-            this.email = "";
+            this.login = "";
             this.password = "";
 
             if (this.userRole !== "notAuthorized") {

@@ -68,21 +68,25 @@ export default new Vuex.Store({
         }
 
         axios
-          .post(`http://localhost:3000/posts/${id}`, { clap })
+          .post(`http://localhost:3000/posts/${id}`, {
+            clap,
+            userLogin: state.user.login,
+          })
           .then(() => {
+            console.log(state.user);
             commit("CHANGE_CLAPS", { id, clap });
           })
           .catch((err) => {
             console.log(err);
           });
       } else {
-        console.log("you can't do it action");
+        console.log("you can't do this action");
       }
     },
 
-    login({ commit }, { email, password }) {
+    login({ commit }, { login, password }) {
       return axios
-        .post("http://localhost:3000/login", { email, password })
+        .post("http://localhost:3000/login", { login, password })
         .then(({ data }) => {
           commit("SET_USER_DATA", data);
         })
@@ -95,19 +99,26 @@ export default new Vuex.Store({
       commit("CLEAR_USER_DATA");
     },
 
-    deletePost({ commit }, id) {
-      axios.delete(`http://localhost:3000/posts/${id}`).then((res) => {
-        console.log(res.data.posts);
-        commit("SET_POSTS", res.data.posts);
-      });
+    deletePost({ commit, state }, id) {
+      if (state.user.role !== "writer") {
+        axios.delete(`http://localhost:3000/posts/${id}`).then((res) => {
+          commit("SET_POSTS", res.data.posts);
+        });
+      } else {
+        console.log("you can't do this action");
+      }
     },
 
-    updatePost({ commit }, { newPost, id }) {
-      return axios
-        .put(`http://localhost:3000/posts/${id}`,  newPost )
-        .then((res) => {
-          commit("UPDATE_POST", res.data.posts);
-        });
+    updatePost({ commit, state }, { newPost, id }) {
+      if (state.user.role !== "writer") {
+        return axios
+          .put(`http://localhost:3000/posts/${id}`, newPost)
+          .then((res) => {
+            commit("UPDATE_POST", res.data.posts);
+          });
+      } else {
+        console.log("you can't do this action");
+      }
     },
   },
 });

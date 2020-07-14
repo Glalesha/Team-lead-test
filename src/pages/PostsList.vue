@@ -1,10 +1,10 @@
 <template>
-  <div class="box">
-    <ul class="post-list">
+  <div class="container">
+    <transition-group name="list" tag="ul" class="post-list">
       <li class="post-item" v-for="post in posts" :key="post.id">
         <PostCard :post="post" />
       </li>
-    </ul>
+    </transition-group>
   </div>
 </template>
 
@@ -17,12 +17,28 @@ export default {
     PostCard,
   },
 
+  data() {
+    return {
+      arr: [
+        { id: 1, title: "afsfsd" },
+        { id: 2, title: "asfdh" },
+        { id: 3, title: "afsfsd" },
+        { id: 4, title: "afsfsd" },
+      ],
+    };
+  },
+
   computed: {
     ...mapState(["posts"]),
   },
 
-  created() {
-    this.$store.dispatch("fetchPosts");
+  methods: {
+    deletePost(id) {
+      this.arr = this.arr.filter((item) => {
+        return item.id !== id;
+      });
+      // this.arr.sort(() => Math.random() - 0.5);
+    },
   },
 };
 </script>
@@ -30,5 +46,9 @@ export default {
 <style scoped lang="scss">
 .post-item:not(:last-child) {
   margin-bottom: 50px;
+}
+
+.a {
+  height: 200px;
 }
 </style>
