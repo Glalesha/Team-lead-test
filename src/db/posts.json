@@ -1,15 +1,14 @@
 {
   "posts": [
     {
-      "title": "123213",
-      "description": "21wswqsxwdas",
-      "id": "3383400",
-      "createdAt": "2020-07-15T10:17:09.622Z",
-      "updateAt": "2020-07-15T10:17:09.622Z",
-      "claps": 7,
-      "usersClapped": [
-        2
-      ]
+      "id": 1,
+      "title": "Название поста",
+      "description": "Текст",
+      "claps": 0,
+      "createdAt": "2019-09-29T00:00:00.000Z",
+      "updateAt": "2019-09-29T00:00:00.000Z",
+      "userId": 1,
+      "usersClapped": []
     }
   ]
 }
