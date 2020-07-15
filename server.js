@@ -43,16 +43,16 @@ app.post("/posts/:id", verifyToken, (req, res) => {
             }
 
             const userClapped = item.usersClapped.find((item) => {
-              return item === req.body.uesrLogin;
+              return item === req.body.userId;
             });
+            (req.body.userId);
 
-            console.log(req.body);
             if (userClapped) {
-              item.usersClapped.filter((item) => {
-                return item !== req.body.userLogin;
+              item.usersClapped = item.usersClapped.filter((item) => {
+                return item !== req.body.userId;
               });
             } else {
-              item.usersClapped = [...item.usersClapped, req.body.userLogin];
+              item.usersClapped = [...item.usersClapped, req.body.userId];
             }
           }
           return item;
@@ -73,6 +73,7 @@ app.post("/posts/:id", verifyToken, (req, res) => {
 
 app.delete("/posts/:id", verifyToken, (req, res) => {
   jwt.verify(req.token, "the_secret_key", (err) => {
+    console.log(err);
     if (err) {
       res.sendStatus(401);
     } else {
@@ -98,7 +99,7 @@ app.delete("/posts/:id", verifyToken, (req, res) => {
   });
 });
 
-app.put("/posts/:id", (req, res) => {
+app.put("/posts/:id", verifyToken, (req, res) => {
   jwt.verify(req.token, "the_secret_key", (err) => {
     if (err) {
       res.sendStatus(401);
@@ -157,18 +158,22 @@ app.get("/users", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log(req.body.login);
   const userFound = users.users.find((item) => {
     return item.login == req.body.login && item.password == req.body.password;
   });
 
   if (userFound) {
-    const userInfo = { login: userFound.login, role: userFound.role };
+    const userInfo = {
+      login: userFound.login,
+      role: userFound.role,
+      id: userFound.id,
+    };
     const token = jwt.sign({ userInfo }, "the_secret_key");
     res.json({
       token,
       login: userInfo.login,
       role: userInfo.role,
+      id: userInfo.id,
     });
   } else {
     req.status(401).json({ error: "Пользователь не найден" });
@@ -176,9 +181,11 @@ app.post("/login", (req, res) => {
 });
 
 function verifyToken(req, res, next) {
+  123;
   const bearerHeader = req.headers["authorization"];
 
   if (typeof bearerHeader !== "undefined") {
+    234;
     const bearer = bearerHeader.split(" ");
     const bearerToken = bearer[1];
     req.token = bearerToken;

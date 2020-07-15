@@ -67,13 +67,14 @@ export default new Vuex.Store({
           clap = -1;
         }
 
+        (state.user);
+
         axios
           .post(`http://localhost:3000/posts/${id}`, {
             clap,
-            userLogin: state.user.login,
+            userId: state.user.id,
           })
           .then(() => {
-            console.log(state.user);
             commit("CHANGE_CLAPS", { id, clap });
           })
           .catch((err) => {
@@ -88,6 +89,7 @@ export default new Vuex.Store({
       return axios
         .post("http://localhost:3000/login", { login, password })
         .then(({ data }) => {
+          (data);
           commit("SET_USER_DATA", data);
         })
         .catch((err) => {
@@ -100,7 +102,8 @@ export default new Vuex.Store({
     },
 
     deletePost({ commit, state }, id) {
-      if (state.user.role !== "writer") {
+      state.user.role;
+      if (state.user.role === "writer") {
         axios.delete(`http://localhost:3000/posts/${id}`).then((res) => {
           commit("SET_POSTS", res.data.posts);
         });
@@ -110,10 +113,12 @@ export default new Vuex.Store({
     },
 
     updatePost({ commit, state }, { newPost, id }) {
-      if (state.user.role !== "writer") {
+      if (state.user.role === "writer") {
+        123;
         return axios
           .put(`http://localhost:3000/posts/${id}`, newPost)
           .then((res) => {
+            res;
             commit("UPDATE_POST", res.data.posts);
           });
       } else {

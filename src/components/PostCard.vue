@@ -79,13 +79,13 @@ export default {
 
     ...mapState({
       userRole: (state) => state.user.role,
-      userLogin: (state) => state.user.login,
+      userId: (state) => state.user.id,
     }),
   },
 
   created() {
-    const userClapped = this.post.usersClapped.find((item) => {
-      return item === this.userLogin;
+    const userClapped = this.post.usersClapped?.find((item) => {
+      return item === this.userId;
     });
 
     if (userClapped) {
@@ -110,10 +110,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.clapIcon {
-  display: block;
-  width: 30px;
-  height: 30px;
-}
-</style>
+<style scoped></style>

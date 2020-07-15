@@ -1,5 +1,5 @@
 <template>
-  <div class="container is-mobile is-two-fifths login-form-container">
+  <div class="is-mobile login-form-container">
     <form @submit.prevent="performLogin" class="login-form">
       <b-field
         label="Логин"
@@ -119,14 +119,13 @@ export default {
 
 <style scoped lang="scss">
 .login-form-container {
+  max-width: 540px;
   margin-top: 200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .login-form {
   margin-bottom: 50px;
-}
-
-.is-two-fifths {
-  max-width: 540px;
 }
 </style>

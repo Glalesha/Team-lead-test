@@ -1,64 +1,15 @@
 {
   "posts": [
     {
-      "title": "sfaddsfdsf",
-      "description": "sdfsfdsf",
-      "id": "2473986",
-      "createdAt": "2020-07-14T16:54:50.477Z",
-      "updateAt": "2020-07-14T16:54:50.477Z",
-      "claps": 14,
+      "title": "123213",
+      "description": "21wswqsxwdas",
+      "id": "3383400",
+      "createdAt": "2020-07-15T10:17:09.622Z",
+      "updateAt": "2020-07-15T10:17:09.622Z",
+      "claps": 7,
       "usersClapped": [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        "reader@mail.com",
-        "reader@mail.com",
-        "reader@mail.com",
-        "reader@mail.com",
-        "reader@mail.com"
+        2
       ]
-    },
-    {
-      "title": "sfafsdfsd",
-      "description": "sdfdfsdfssfad",
-      "id": "2667802",
-      "createdAt": "2020-07-14T16:54:54.694Z",
-      "updateAt": "2020-07-14T16:54:54.694Z",
-      "claps": 3,
-      "usersClapped": [
-        null,
-        null,
-        null
-      ]
-    },
-    {
-      "title": "sadsasads",
-      "description": "adsfdsfafds",
-      "id": "3528587",
-      "createdAt": "2020-07-14T16:54:58.347Z",
-      "updateAt": "2020-07-14T16:54:58.347Z",
-      "claps": 0
     }
   ]
 }

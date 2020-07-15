@@ -10,7 +10,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { dom } from "@fortawesome/fontawesome-svg-core";
-import axios from "axios";
+import axios from "axios"
 
 dom.watch();
 
@@ -37,14 +37,16 @@ new Vue({
       this.$store.commit("SET_USER_DATA", userData);
     }
     axios.interceptors.response.use(
-      (response) => response,
-      (error) => {
+      response => response,
+      error => { 
         if (error.response.status === 401) {
-          this.$store.dispatch("logout");
+          this.$store.dispatch('logout')
+          
         }
-        return Promise.reject(error);
+        return Promise.reject(error)
       }
-    );
+
+    )
   },
   render: (h) => h(App),
 }).$mount("#app");

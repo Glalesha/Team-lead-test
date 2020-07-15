@@ -1,7 +1,14 @@
 <template>
-  <div class="container">
+  <div>
+    <div v-if="posts.length > 10" class="block">
+      <b-pagination
+        :total="posts.length"
+        per-page="10"
+        :current.sync="currentPage"
+      ></b-pagination>
+    </div>
     <transition-group name="list" tag="ul" class="post-list">
-      <li class="post-item" v-for="post in posts" :key="post.id">
+      <li class="post-item" v-for="post in currentPosts" :key="post.id">
         <PostCard :post="post" />
       </li>
     </transition-group>
@@ -19,33 +26,31 @@ export default {
 
   data() {
     return {
-      arr: [
-        { id: 1, title: "afsfsd" },
-        { id: 2, title: "asfdh" },
-        { id: 3, title: "afsfsd" },
-        { id: 4, title: "afsfsd" },
-      ],
+      currentPage: 1,
     };
   },
 
   computed: {
     ...mapState(["posts"]),
-  },
 
-  methods: {
-    deletePost(id) {
-      this.arr = this.arr.filter((item) => {
-        return item.id !== id;
-      });
-      // this.arr.sort(() => Math.random() - 0.5);
+    currentPosts() {
+      return this.posts.slice(
+        (this.currentPage - 1) * 10,
+        this.currentPage * 10
+      );
     },
   },
 };
 </script>
 
 <style scoped lang="scss">
-.post-item:not(:last-child) {
-  margin-bottom: 50px;
+.post-item {
+  max-width: 720px;
+  margin: auto;
+
+  &:not(:last-child) {
+    margin-bottom: 50px;
+  }
 }
 
 .a {
