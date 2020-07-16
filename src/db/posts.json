@@ -1,28 +1,29 @@
 {
   "posts": [
     {
-      "title": "asdfdsafafsd",
-      "description": "asdfasdfdsafsadfsdaf",
-      "id": "7903380",
-      "createdAt": "2020-07-16T13:25:05.676Z",
-      "updateAt": "2020-07-16T13:25:05.676Z",
-      "claps": 2,
-      "author": 1189299,
+      "title": "Пост №1",
+      "description": "Пост №1",
+      "id": "3857248",
+      "createdAt": "2020-07-16T16:55:54.933Z",
+      "updateAt": "2020-07-16T16:55:54.933Z",
+      "claps": 3,
+      "author": 1068033,
       "usersClapped": [
-        6394409,
-        6401230
+        9159324,
+        1586765,
+        6547579
       ]
     },
     {
-      "title": "asdfsadfasdasdxcsdcsd",
-      "description": "sadfasdfsdafsdvcds ",
-      "id": "5586069",
-      "createdAt": "2020-07-16T13:25:37.993Z",
-      "updateAt": "2020-07-16T13:25:46.760Z",
+      "title": "Пост №2",
+      "description": "Пост №2",
+      "id": "965433",
+      "createdAt": "2020-07-16T16:56:07.329Z",
+      "updateAt": "2020-07-16T16:56:07.329Z",
       "claps": 1,
-      "author": 9320130,
+      "author": 1068033,
       "usersClapped": [
-        6401230
+        4326720
       ]
     }
   ]

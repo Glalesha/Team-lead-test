@@ -1,28 +1,46 @@
 {
   "users": [
     {
-      "login": "reader@mail.com",
-      "password": "123456",
-      "id": 6394409,
-      "role": "reader"
-    },
-    {
       "login": "writer@mail.com",
       "password": "123456",
-      "id": 1189299,
+      "id": 1068033,
       "role": "writer"
     },
     {
-      "login": "writer2@mail.com",
+      "login": "reader@mail.com",
       "password": "123456",
-      "id": 9320130,
+      "id": 3419696,
       "role": "writer"
     },
     {
       "login": "reader2@mail.com",
       "password": "123456",
-      "id": 6401230,
+      "id": 1586765,
       "role": "reader"
+    },
+    {
+      "login": "reader3@mail.com",
+      "password": "123456",
+      "id": 9159324,
+      "role": "reader"
+    },
+    {
+      "login": "reader4@mail.com",
+      "password": "123456",
+      "id": 4326720,
+      "role": "reader"
+    },
+    {
+      "login": "reader5@mail.com",
+      "password": "123456",
+      "id": 6547579,
+      "role": "reader"
+    },
+    {
+      "login": "writer10@mail.com",
+      "password": "123456",
+      "id": 1295682,
+      "role": "writer"
     }
   ]
 }

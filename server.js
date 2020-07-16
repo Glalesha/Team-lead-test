@@ -10,7 +10,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
-  res.json({
+  return res.json({
     msg: "welcome to the API",
   });
 });
@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 app.get("/posts", (req, res) => {
   fs.readFile("./src/db/posts.json", "UTF-8", (err, postsDB) => {
     const posts = JSON.parse(postsDB);
-    res.json({
+    return res.json({
       posts: posts.posts,
     });
   });
@@ -27,7 +27,7 @@ app.get("/posts", (req, res) => {
 app.post("/posts/:id", verifyToken, (req, res) => {
   jwt.verify(req.token, "the_secret_key", (err) => {
     if (err) {
-      res.sendStatus(401);
+      return res.sendStatus(401);
     } else {
       if (req.body) {
         let postsDB = fs.readFileSync("./src/db/posts.json", "UTF-8");
@@ -62,7 +62,7 @@ app.post("/posts/:id", verifyToken, (req, res) => {
           if (err) {
             console.log(err + data);
           } else {
-            res.json();
+            return res.json();
           }
         });
       }
@@ -74,7 +74,7 @@ app.delete("/posts/:id", verifyToken, (req, res) => {
   jwt.verify(req.token, "the_secret_key", (err) => {
     console.log(err);
     if (err) {
-      res.sendStatus(401);
+      return res.sendStatus(401);
     } else {
       let postsDB = fs.readFileSync("./src/db/posts.json");
       const posts = JSON.parse(postsDB);
@@ -90,7 +90,7 @@ app.delete("/posts/:id", verifyToken, (req, res) => {
           if (err) {
             console.log(err + data);
           } else {
-            res.json({ posts: data.posts });
+            return res.json({ posts: data.posts });
           }
         }
       );
@@ -101,7 +101,7 @@ app.delete("/posts/:id", verifyToken, (req, res) => {
 app.put("/posts/:id", verifyToken, (req, res) => {
   jwt.verify(req.token, "the_secret_key", (err) => {
     if (err) {
-      res.sendStatus(401);
+      return res.sendStatus(401);
     } else {
       fs.readFile("./src/db/posts.json", "UTF-8", (err, postsDB) => {
         const posts = JSON.parse(postsDB);
@@ -142,7 +142,7 @@ app.put("/posts/:id", verifyToken, (req, res) => {
             if (err) {
               console.log(err + data);
             } else {
-              res.json({ posts: data.posts });
+              return res.json({ posts: data.posts });
             }
           }
         );
@@ -152,27 +152,36 @@ app.put("/posts/:id", verifyToken, (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const usersDB = fs.readFileSync("./src/db/users.json", "UTF-8");
-  const users = JSON.parse(usersDB);
-  const userFound = users.users.find((item) => {
-    return item.login == req.body.login && item.password == req.body.password;
-  });
-
-  if (userFound) {
-    const userInfo = {
-      login: userFound.login,
-      role: userFound.role,
-      id: userFound.id,
+  if (req.body) {
+    const user = {
+      login: req.body.credentials.login,
+      password: req.body.credentials.password,
     };
-    const token = jwt.sign({ userInfo }, "the_secret_key");
-    res.json({
-      token,
-      login: userInfo.login,
-      role: userInfo.role,
-      id: userInfo.id,
+
+    const usersDB = fs.readFileSync("./src/db/users.json", "UTF-8");
+    const users = JSON.parse(usersDB);
+    const userFound = users.users.find((item) => {
+      return item.login == user.login && item.password == user.password;
     });
+
+    if (userFound) {
+      const userInfo = {
+        login: userFound.login,
+        role: userFound.role,
+        id: userFound.id,
+      };
+      const token = jwt.sign({ userInfo }, "the_secret_key");
+      return res.json({
+        token,
+        login: userInfo.login,
+        role: userInfo.role,
+        id: userInfo.id,
+      });
+    } else {
+      return res.status(400).json({ error: "Пользователь не найден" });
+    }
   } else {
-    res.status(400).json({ error: "Пользователь не найден" });
+    return res.status(401);
   }
 });
 
@@ -185,9 +194,9 @@ app.post("/register", (req, res) => {
       role: req.body.role,
     };
 
-    fs.readFile("./src/db/users.json", "UTF-8", (err, users) => {
+    fs.readFile("./src/db/users.json", "UTF-8", (err, usersDB) => {
       if (err) {
-        res.sendStatus(401).json({ err });
+        return res.sendStatus(401).json({ err });
       } else {
         const users = JSON.parse(usersDB);
         const userFound = users.users.find((item) => {
@@ -195,9 +204,7 @@ app.post("/register", (req, res) => {
         });
 
         if (userFound) {
-          res.sendStatus(400).json({
-            error: "Пользователь с таким логином уже существует",
-          });
+          return res.sendStatus(401);
         } else {
           const newUsers = {};
           newUsers.users = [...users.users, user];
@@ -209,7 +216,7 @@ app.post("/register", (req, res) => {
             } else {
               const token = jwt.sign({ user }, "the_secret_key");
 
-              res.json({
+              return res.json({
                 token,
                 login: user.login,
                 password: user.password,
@@ -221,6 +228,8 @@ app.post("/register", (req, res) => {
         }
       }
     });
+  } else {
+    return res.sendStatus(401);
   }
 });
 
@@ -233,7 +242,7 @@ function verifyToken(req, res, next) {
     req.token = bearerToken;
     next();
   } else {
-    res.sendStatus(401);
+    return res.sendStatus(401);
   }
 }
 

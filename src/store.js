@@ -44,10 +44,10 @@ export default new Vuex.Store({
 
     CLEAR_USER_DATA(state) {
       localStorage.removeItem("user");
-      (state.user = {
+      state.user = {
         role: "notAuthorized",
-      }),
-        (axios.defaults.headers.common["Authorization"] = null);
+      };
+      axios.defaults.headers.common["Authorization"] = null;
     },
 
     UPDATE_POST(state, newPosts) {
@@ -86,9 +86,9 @@ export default new Vuex.Store({
       }
     },
 
-    login({ commit }, { login, password }) {
+    login({ commit }, credentials) {
       return axios
-        .post("http://localhost:3000/login", { login, password })
+        .post("http://localhost:3000/login", { credentials })
         .then(({ data }) => {
           commit("SET_USER_DATA", data);
         })
@@ -101,7 +101,6 @@ export default new Vuex.Store({
       return axios
         .post("http://localhost:3000/register", credentials)
         .then(({ data }) => {
-          data;
           commit("SET_USER_DATA", data);
         })
         .catch((err) => {

@@ -49,11 +49,15 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-  const isWriter =
+  const userRole =
     localStorage.getItem("user") &&
-    JSON.parse(localStorage.getItem("user")).role === "writer";
+    JSON.parse(localStorage.getItem("user")).role;
 
-  if (to.matched.some((record) => record.meta.requiresRole) && !isWriter) {
+  if (
+    to.matched.some((record) => {
+      return record.meta.requiresRole && record.meta.requiresRole !== userRole;
+    })
+  ) {
     next("/");
   } else {
     next();
