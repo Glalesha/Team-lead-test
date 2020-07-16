@@ -19,7 +19,7 @@
           >
         </div>
         <div class="level-right">
-          <template v-if="userRole === 'writer'">
+          <template v-if="userId === author">
             <b-button
               class="level-item"
               tag="router-link"
@@ -78,9 +78,13 @@ export default {
     },
 
     ...mapState({
-      userRole: (state) => state.user.role,
       userId: (state) => state.user.id,
+      userRole: (state) => state.user.role,
     }),
+
+    author() {
+      return this.$store.getters.getPost(this.post.id).author;
+    },
   },
 
   created() {

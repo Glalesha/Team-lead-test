@@ -28,7 +28,7 @@
         tag="router-link"
         :to="{ name: 'login' }"
         type="is-info"
-        ><a class="button is-info">log in </a>
+        ><a class="button is-info">log in</a>
       </b-navbar-item>
     </template>
   </b-navbar>

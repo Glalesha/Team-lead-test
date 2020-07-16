@@ -1,6 +1,6 @@
 <template>
-  <div class="is-mobile login-form-container">
-    <form @submit.prevent="performLogin" class="login-form">
+  <div class="is-mobile register-form-container">
+    <form @submit.prevent="performRegister" class="register-form">
       <b-field
         label="Логин"
         :type="{ 'is-danger': $v.login.$error }"
@@ -35,6 +35,13 @@
         ></b-input>
       </b-field>
 
+      <b-radio v-model="role" name="role" native-value="reader"
+        >Читатель</b-radio
+      >
+      <b-radio v-model="role" name="role" native-value="writer"
+        >Редактор</b-radio
+      >
+
       <p class="control">
         <b-button
           :disabled="$v.$invalid"
@@ -42,13 +49,13 @@
           native-type="submit"
           class="button is-primary"
         >
-          Войти
+          регистрация
         </b-button>
       </p>
 
       <p>
-        Нет аккаунта?
-        <router-link :to="{ name: 'register' }">Зарегистрируйтесь</router-link>
+        Уже есть аккаунт?
+        <router-link :to="{ name: 'login' }">Войдите</router-link>
       </p>
 
       <p v-if="$v.$anyError" class="has-text-danger">
@@ -60,7 +67,7 @@
       :active.sync="showErrorNotification"
       class="notifation is-danger"
     >
-      Логин или пароль введены не верно
+      Пользователь с таким логином уже существует
     </b-notification>
   </div>
 </template>
@@ -74,6 +81,7 @@ export default {
     return {
       login: "",
       password: "",
+      role: "",
       showErrorNotification: false,
     };
   },
@@ -88,6 +96,10 @@ export default {
       mingLength: minLength(6),
       required,
     },
+
+    role: {
+      required,
+    },
   },
 
   computed: {
@@ -97,13 +109,15 @@ export default {
   },
 
   methods: {
-    performLogin() {
+    performRegister() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         this.$store
-          .dispatch("login", {
+          .dispatch("register", {
             login: this.login,
             password: this.password,
+            role: this.role,
+            id: Math.ceil(Math.random() * 10000000),
           })
           .then(() => {
             this.login = "";
@@ -123,14 +137,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.login-form-container {
+.register-form-container {
   max-width: 540px;
   margin-top: 200px;
   margin-left: auto;
   margin-right: auto;
 }
 
-.login-form {
+.register-form {
   margin-bottom: 50px;
 }
 </style>

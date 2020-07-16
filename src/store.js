@@ -42,9 +42,12 @@ export default new Vuex.Store({
       ] = `Bearer ${userData.token}`;
     },
 
-    CLEAR_USER_DATA() {
+    CLEAR_USER_DATA(state) {
       localStorage.removeItem("user");
-      location.reload();
+      (state.user = {
+        role: "notAuthorized",
+      }),
+        (axios.defaults.headers.common["Authorization"] = null);
     },
 
     UPDATE_POST(state, newPosts) {
@@ -67,8 +70,6 @@ export default new Vuex.Store({
           clap = -1;
         }
 
-        (state.user);
-
         axios
           .post(`http://localhost:3000/posts/${id}`, {
             clap,
@@ -89,7 +90,18 @@ export default new Vuex.Store({
       return axios
         .post("http://localhost:3000/login", { login, password })
         .then(({ data }) => {
-          (data);
+          commit("SET_USER_DATA", data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+
+    register({ commit }, credentials) {
+      return axios
+        .post("http://localhost:3000/register", credentials)
+        .then(({ data }) => {
+          data;
           commit("SET_USER_DATA", data);
         })
         .catch((err) => {

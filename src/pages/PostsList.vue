@@ -1,12 +1,13 @@
 <template>
   <div>
-    <div v-if="posts.length > 10" class="block">
-      <b-pagination
-        :total="posts.length"
-        per-page="10"
-        :current.sync="currentPage"
-      ></b-pagination>
-    </div>
+    <transition name="fade"
+      ><div v-if="posts.length > 10" class="block">
+        <b-pagination
+          :total="posts.length"
+          per-page="10"
+          :current.sync="currentPage"
+        ></b-pagination></div
+    ></transition>
     <transition-group name="list" tag="ul" class="post-list">
       <li class="post-item" v-for="post in currentPosts" :key="post.id">
         <PostCard :post="post" />

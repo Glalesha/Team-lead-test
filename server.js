@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const fs = require("fs");
-const users = require("./src/db/users");
 
 const app = express();
 
@@ -31,7 +30,7 @@ app.post("/posts/:id", verifyToken, (req, res) => {
       res.sendStatus(401);
     } else {
       if (req.body) {
-        let postsDB = fs.readFileSync("./src/db/posts.json");
+        let postsDB = fs.readFileSync("./src/db/posts.json", "UTF-8");
         const posts = JSON.parse(postsDB);
         let data = { posts: [] };
         data.posts = posts.posts.map((item) => {
@@ -45,7 +44,7 @@ app.post("/posts/:id", verifyToken, (req, res) => {
             const userClapped = item.usersClapped.find((item) => {
               return item === req.body.userId;
             });
-            (req.body.userId);
+            req.body.userId;
 
             if (userClapped) {
               item.usersClapped = item.usersClapped.filter((item) => {
@@ -131,6 +130,7 @@ app.put("/posts/:id", verifyToken, (req, res) => {
               createdAt: req.body.createdAt,
               updateAt: req.body.updateAt,
               claps: req.body.claps,
+              author: req.body.author,
             },
           ];
         }
@@ -151,13 +151,9 @@ app.put("/posts/:id", verifyToken, (req, res) => {
   });
 });
 
-app.get("/users", (req, res) => {
-  res.json({
-    users,
-  });
-});
-
 app.post("/login", (req, res) => {
+  const usersDB = fs.readFileSync("./src/db/users.json", "UTF-8");
+  const users = JSON.parse(usersDB);
   const userFound = users.users.find((item) => {
     return item.login == req.body.login && item.password == req.body.password;
   });
@@ -176,16 +172,62 @@ app.post("/login", (req, res) => {
       id: userInfo.id,
     });
   } else {
-    req.status(401).json({ error: "Пользователь не найден" });
+    res.status(400).json({ error: "Пользователь не найден" });
+  }
+});
+
+app.post("/register", (req, res) => {
+  if (req.body) {
+    const user = {
+      login: req.body.login,
+      password: req.body.password,
+      id: req.body.id,
+      role: req.body.role,
+    };
+
+    fs.readFile("./src/db/users.json", "UTF-8", (err, users) => {
+      if (err) {
+        res.sendStatus(401).json({ err });
+      } else {
+        const users = JSON.parse(usersDB);
+        const userFound = users.users.find((item) => {
+          return item.login === user.login;
+        });
+
+        if (userFound) {
+          res.sendStatus(400).json({
+            error: "Пользователь с таким логином уже существует",
+          });
+        } else {
+          const newUsers = {};
+          newUsers.users = [...users.users, user];
+          const data = JSON.stringify(newUsers, null, 2);
+
+          fs.writeFile("./src/db/users.json", data, (err) => {
+            if (err) {
+              console.log(err + newUsers);
+            } else {
+              const token = jwt.sign({ user }, "the_secret_key");
+
+              res.json({
+                token,
+                login: user.login,
+                password: user.password,
+                role: user.role,
+                id: user.id,
+              });
+            }
+          });
+        }
+      }
+    });
   }
 });
 
 function verifyToken(req, res, next) {
-  123;
   const bearerHeader = req.headers["authorization"];
 
   if (typeof bearerHeader !== "undefined") {
-    234;
     const bearer = bearerHeader.split(" ");
     const bearerToken = bearer[1];
     req.token = bearerToken;

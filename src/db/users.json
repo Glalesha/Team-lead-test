@@ -1,15 +1,27 @@
 {
   "users": [
     {
-      "id": 1,
+      "login": "reader@mail.com",
+      "password": "123456",
+      "id": 6394409,
+      "role": "reader"
+    },
+    {
       "login": "writer@mail.com",
-      "password": 123456,
+      "password": "123456",
+      "id": 1189299,
       "role": "writer"
     },
     {
-      "id": 2,
-      "login": "reader@mail.com",
-      "password": 123456,
+      "login": "writer2@mail.com",
+      "password": "123456",
+      "id": 9320130,
+      "role": "writer"
+    },
+    {
+      "login": "reader2@mail.com",
+      "password": "123456",
+      "id": 6401230,
       "role": "reader"
     }
   ]

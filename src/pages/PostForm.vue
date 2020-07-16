@@ -41,6 +41,7 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
+import { mapState } from "vuex";
 
 export default {
   props: ["id"],
@@ -66,6 +67,10 @@ export default {
     post() {
       return this.$store.getters.getPost(this.id);
     },
+
+    ...mapState({
+      userId: (state) => state.user.id,
+    }),
   },
 
   methods: {
@@ -99,6 +104,7 @@ export default {
               updateAt: new Date(),
               claps: 0,
               userId: 1,
+              author: this.userId,
             },
             id: Math.ceil(Math.random() * 10000000),
           })

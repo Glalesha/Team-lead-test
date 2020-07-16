@@ -4,6 +4,7 @@ import PostsList from "./pages/PostsList";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import PostForm from "./pages/PostForm";
+import Register from "./pages/Register";
 
 Vue.use(Router);
 
@@ -20,6 +21,11 @@ const router = new Router({
       path: "/login",
       name: "login",
       component: Login,
+    },
+    {
+      path: "/register",
+      name: "register",
+      component: Register,
     },
     {
       path: "/",
