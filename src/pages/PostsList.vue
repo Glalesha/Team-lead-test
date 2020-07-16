@@ -1,10 +1,10 @@
 <template>
   <div>
     <transition name="fade"
-      ><div v-if="posts.length > 10" class="block">
+      ><div v-if="posts.length > 4" class="block">
         <b-pagination
           :total="posts.length"
-          per-page="10"
+          per-page="4"
           :current.sync="currentPage"
         ></b-pagination></div
     ></transition>
@@ -35,10 +35,7 @@ export default {
     ...mapState(["posts"]),
 
     currentPosts() {
-      return this.posts.slice(
-        (this.currentPage - 1) * 10,
-        this.currentPage * 10
-      );
+      return this.posts.slice((this.currentPage - 1) * 4, this.currentPage * 4);
     },
   },
 };
