@@ -1,5 +1,3 @@
-# team-lead-test
-
 ## Project setup
 ```
 npm install
